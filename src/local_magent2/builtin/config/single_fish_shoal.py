@@ -14,8 +14,8 @@ def get_config(map_size):
     small = cfg.register_agent_type(
         "small",
         {
-            "width": 2,
-            "length": 2,
+            "width": 1,
+            "length": 1,
             "hp": 10,
             "speed": 2,
             "view_range": gw.CircleRange(6),

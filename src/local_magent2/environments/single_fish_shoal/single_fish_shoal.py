@@ -225,8 +225,8 @@ def get_config(
 class _parallel_env(magent_parallel_env, EzPickle):
     metadata = {
         "render_modes": ["human", "rgb_array"],
-        "name": "battle_v4",
-        "render_fps": 5,
+        "name": "single_fish_shoal",
+        "render_fps": 10,
     }
 
     def __init__(
