@@ -160,3 +160,4 @@ cython_debug/
 #.idea/
 
 .vscode/
+src/local_magent2/environments/CustomEnvironment/*

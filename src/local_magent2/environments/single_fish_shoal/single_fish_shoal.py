@@ -129,6 +129,10 @@ default_reward_args = dict(
     attack_penalty=-0.1,
     attack_opponent_reward=0.2,
 )
+# default_reward_args = dict(
+#     alignment_reward = 0.1,
+#     dead_penalty=-1.0
+# )
 
 
 def parallel_env(
@@ -256,6 +260,7 @@ class _parallel_env(magent_parallel_env, EzPickle):
         self.leftID = 0
         self.rightID = 1
         reward_vals = np.array([KILL_REWARD] + list(reward_args.values()))
+        print(reward_vals)
         reward_range = [
             np.minimum(reward_vals, 0).sum(),
             np.maximum(reward_vals, 0).sum(),
