@@ -3,9 +3,9 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 
-class DQN_Basic(nn.Module):
+class DQN_Basic_LSTM(nn.Module):
     def __init__(self, observation_shape, n_actions):
-        super(DQN_Basic, self).__init__()
+        super(DQN_Basic_LSTM, self).__init__()
         self.n_actions = n_actions
         self.observation_shape = observation_shape
         self.convolve_and_rearrange = nn.Sequential(
