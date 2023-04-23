@@ -17,10 +17,14 @@ class DQN_NET(nn.Module):
             nn.ReLU(),
             nn.Conv2d(in_channels=8, out_channels=16, kernel_size=3, stride=1,padding=1),
             nn.ReLU(),
-            nn.Conv2d(in_channels=16, out_channels=16, kernel_size=3, stride=1,padding=1),
+            nn.Conv2d(in_channels=16, out_channels=32, kernel_size=3, stride=1,padding=1),
+            nn.ReLU(),
+            nn.Conv2d(in_channels=32, out_channels=32, kernel_size=3, stride=1,padding=1),
             nn.ReLU(),
             nn.Flatten(),
             nn.LazyLinear(256),
+            nn.ReLU(),
+            nn.LazyLinear(64),
             nn.ReLU(),
             nn.LazyLinear(output_dim)
         )

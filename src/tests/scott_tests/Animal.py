@@ -18,7 +18,7 @@ class Animal:
 
         self.exploration_rate = 1
         self.exploration_rate_decay = 0.99999975
-        self.exploration_rate_min = 0.15
+        self.exploration_rate_min = 0.1
         self.curr_step = 0
 
         self.save_every = 5e5  # no. of experiences between saving Mario Net
@@ -35,8 +35,8 @@ class Animal:
         self.loss_fn = torch.nn.SmoothL1Loss()
 
         self.burnin = 1e4  # min. experiences before training
-        self.learn_every = 5  # no. of experiences between updates to Q_online
-        self.sync_every = 5e3  # no. of experiences between Q_target & Q_online sync
+        self.learn_every = 3  # no. of experiences between updates to Q_online
+        self.sync_every = 1e4  # no. of experiences between Q_target & Q_online sync
 
     def act(self, state):
         """
