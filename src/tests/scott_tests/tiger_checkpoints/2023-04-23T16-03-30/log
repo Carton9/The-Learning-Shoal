@@ -1,0 +1,2 @@
+ Episode    Step   Epsilon     MeanReward     MeanLength       MeanLoss     MeanQValue      TimeDelta                Time
+       0     900     1.000          2.000        900.000          0.000          0.000          2.493 2023-04-23T16:03:33
