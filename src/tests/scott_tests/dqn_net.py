@@ -20,7 +20,7 @@ class DQN_NET(nn.Module):
             nn.Conv2d(in_channels=16, out_channels=16, kernel_size=3, stride=1,padding=1),
             nn.ReLU(),
             nn.Flatten(),
-            nn.LazyLinear(128),
+            nn.LazyLinear(256),
             nn.ReLU(),
             nn.LazyLinear(output_dim)
         )
