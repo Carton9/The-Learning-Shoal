@@ -17,15 +17,20 @@ class DQN_Basic_LSTM(nn.Module):
             nn.ReLU(inplace=True)
         )
         self.flatten = nn.Flatten()
-        self.lstm = nn.LSTM(input_size=32, hidden_size=128, num_layers=1, batch_first=True)
+        print(observation_shape)
+        if(observation_shape[0]==3):
+            self.lstm = nn.LSTM(input_size=576, hidden_size=128, num_layers=1, batch_first=True)
+        else:
+            self.lstm = nn.LSTM(input_size=5184, hidden_size=128, num_layers=1, batch_first=True)
         self.layer1 = nn.Linear(128, 128)
         self.layer2 = nn.Linear(128, self.n_actions)
         self.softmax = nn.Softmax(dim=1)
 
     def forward(self, x):
-        x = self.convolve_and_rearrange(x)
+        x = self.convolve_and_rearrange(x.permute(0, 3, 1, 2))
         x = self.flatten(x)
         x = x.view(x.size(0), 1, -1)  # Reshape the tensor to (batch_size, 1, flattened_size) for LSTM input
+        # print(x.shape)
         x, _ = self.lstm(x)
         x = x.squeeze(1)  # Remove the sequence dimension
         x = F.relu(self.layer1(x))
