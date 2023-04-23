@@ -27,8 +27,10 @@ class DQN_Basic(nn.Module):
     # Called with either one element to determine next action, or a batch
     # during optimization. Returns tensor([[left0exp,right0exp]...]).
     def forward(self, x):
+        # (1, H, W, C)
         x = self.convolve_and_rearrange(x.permute(0, 3, 1, 2))  # rearrange input shape to (C, H, W)
         x = self.flatten(x)
+        # print(x.shape)
         x = F.relu(self.layer1(x))
         x = self.layer2(x)
         x = self.softmax(x)
