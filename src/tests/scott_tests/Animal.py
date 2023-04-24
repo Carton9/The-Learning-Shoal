@@ -1,4 +1,5 @@
 from dqn_net import DQN_NET
+from dqn_LSTM import DQN_LSTM
 import torch
 import numpy as np
 from torch import nn
@@ -13,7 +14,8 @@ class Animal:
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
         # Mario's DNN to predict the most optimal action - we implement this in the Learn section
-        self.net = DQN_NET(self.state_dim, self.action_dim).float()
+        # self.net = DQN_NET(self.state_dim, self.action_dim).float()
+        self.net = DQN_LSTM(self.state_dim, self.action_dim).float()
         self.net = self.net.to(device=self.device)
 
         self.exploration_rate = 1
