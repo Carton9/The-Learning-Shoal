@@ -14,18 +14,20 @@ class DQN_NET(nn.Module):
 
         self.online = nn.Sequential(
             nn.Conv2d(in_channels=c, out_channels=8, kernel_size=3, stride=1,padding=1),
-            nn.ReLU(),
+            nn.LeakyReLU(0.01),
             nn.Conv2d(in_channels=8, out_channels=16, kernel_size=3, stride=1,padding=1),
-            nn.ReLU(),
+            nn.LeakyReLU(0.01),
+            # nn.BatchNorm2d(100),
             nn.Conv2d(in_channels=16, out_channels=32, kernel_size=3, stride=1,padding=1),
-            nn.ReLU(),
+            nn.LeakyReLU(0.01),
             nn.Conv2d(in_channels=32, out_channels=32, kernel_size=3, stride=1,padding=1),
-            nn.ReLU(),
+            nn.LeakyReLU(0.01),
+            # nn.BatchNorm2d(100),
             nn.Flatten(),
             nn.LazyLinear(256),
-            nn.ReLU(),
+            nn.LeakyReLU(0.01),
             nn.LazyLinear(64),
-            nn.ReLU(),
+            nn.LeakyReLU(0.01),
             nn.LazyLinear(output_dim)
         )
 

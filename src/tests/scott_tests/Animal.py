@@ -66,23 +66,31 @@ class Animal:
         self.curr_step += 1
         return action_idx
     
+    # def cache(self, state, next_state, action, reward, done, agentName=None):
+    #     """
+    #     Store the experience to self.memory (replay buffer)
+    #     """
+    #     state = torch.tensor(state, device=self.device)
+    #     next_state = torch.tensor(next_state, device=self.device)
+    #     action = torch.tensor([action], device=self.device)
+    #     reward = torch.tensor([reward], device=self.device)
+    #     done = torch.tensor([done], device=self.device)
+    #     # agentName = torch.tensor([agentName], device=self.device)
+
+    #     self.memory.append((state, next_state, action, reward, done))
+
+    # def recall(self):
+    #     """
+    #     Retrieve a batch of experiences from memory
+    #     """
+    #     batch = random.sample(self.memory, self.batch_size)
+    #     state, next_state, action, reward, done = map(torch.stack, zip(*batch))
+    #     return state, next_state, action.squeeze(), reward.squeeze(), done.squeeze() #, agentName.squeeze()
+    
     def cache(self, state, next_state, action, reward, done, agentName=None):
         """
         Store the experience to self.memory (replay buffer)
-
-        Inputs:
-        state (``LazyFrame``),
-        next_state (``LazyFrame``),
-        action (``int``),
-        reward (``float``),
-        done(``bool``))
         """
-        state = torch.tensor(state, device=self.device)
-        next_state = torch.tensor(next_state, device=self.device)
-        action = torch.tensor([action], device=self.device)
-        reward = torch.tensor([reward], device=self.device)
-        done = torch.tensor([done], device=self.device)
-        # agentName = torch.tensor([agentName], device=self.device)
 
         self.memory.append((state, next_state, action, reward, done))
 
@@ -91,8 +99,15 @@ class Animal:
         Retrieve a batch of experiences from memory
         """
         batch = random.sample(self.memory, self.batch_size)
-        state, next_state, action, reward, done = map(torch.stack, zip(*batch))
-        return state, next_state, action.squeeze(), reward.squeeze(), done.squeeze() #, agentName.squeeze()
+        state, next_state, action, reward, done = map(np.stack, zip(*batch))
+        
+        state = torch.tensor(state, device=self.device)
+        next_state = torch.tensor(next_state, device=self.device)
+        action = torch.tensor(action, device=self.device, dtype=torch.int64).squeeze()
+        reward = torch.tensor(reward, device=self.device).squeeze()
+        done = torch.tensor(done, device=self.device).squeeze()
+
+        return state, next_state, action, reward, done
     
     def td_estimate(self, state, action):
         current_Q = self.net(state, model="online")[
