@@ -4,6 +4,7 @@ import numpy as np
 from torch import nn
 from collections import deque
 import random, datetime, os, copy
+from dqn_LSTM import DQN_LSTM
 class Animal:
     def __init__(self, state_dim, action_dim, save_dir):
         self.state_dim = state_dim
@@ -21,7 +22,7 @@ class Animal:
         self.exploration_rate_min = 0.1
         self.curr_step = 0
 
-        self.save_every = 5e5  # no. of experiences between saving Mario Net
+        self.save_every = 5e4  # no. of experiences between saving Mario Net
         
         # cache and memory
         self.memory = deque(maxlen=50000)
@@ -38,7 +39,7 @@ class Animal:
         self.learn_every = 3  # no. of experiences between updates to Q_online
         self.sync_every = 1e4  # no. of experiences between Q_target & Q_online sync
 
-    def act(self, state):
+    def act(self, state, active=True):
         """
     Given a state, choose an epsilon-greedy action and update value of step.
 
@@ -58,12 +59,13 @@ class Animal:
             action_values = self.net(state, model="online")
             action_idx = torch.argmax(action_values, axis=1).item()
 
-        # decrease exploration_rate
-        self.exploration_rate *= self.exploration_rate_decay
-        self.exploration_rate = max(self.exploration_rate_min, self.exploration_rate)
+        if active:
+            # decrease exploration_rate
+            self.exploration_rate *= self.exploration_rate_decay
+            self.exploration_rate = max(self.exploration_rate_min, self.exploration_rate)
 
-        # increment step
-        self.curr_step += 1
+            # increment step
+            self.curr_step += 1
         return action_idx
     
     # def cache(self, state, next_state, action, reward, done, agentName=None):
