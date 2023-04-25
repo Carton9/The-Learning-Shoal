@@ -26,13 +26,13 @@ class DQN_LSTM(nn.Module):
         c, h, w = input_dim
 
         self.online = nn.Sequential(
-            nn.Conv2d(in_channels=c, out_channels=8, kernel_size=3, stride=1,padding=1),
+            nn.Conv2d(in_channels=c, out_channels=c*2, kernel_size=3, stride=1,padding=1),
             nn.ReLU(),
-            nn.Conv2d(in_channels=8, out_channels=16, kernel_size=3, stride=1,padding=1),
+            nn.Conv2d(in_channels=c*2, out_channels=c*4, kernel_size=3, stride=1,padding=1),
             nn.ReLU(),
-            nn.Conv2d(in_channels=16, out_channels=32, kernel_size=3, stride=1,padding=1),
+            nn.Conv2d(in_channels=c*4, out_channels=c*8, kernel_size=3, stride=1,padding=1),
             nn.ReLU(),
-            nn.Conv2d(in_channels=32, out_channels=32, kernel_size=3, stride=1,padding=1),
+            nn.Conv2d(in_channels=c*8, out_channels=c*8, kernel_size=3, stride=1,padding=1),
             nn.ReLU(),
             nn.Flatten(),
             nn.LazyLinear(256),
