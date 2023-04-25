@@ -43,10 +43,11 @@ class Animal:
         """
     Given a state, choose an epsilon-greedy action and update value of step.
     """
+        # print("act")
         state = torch.tensor(state, device=self.device).unsqueeze(0)
         if hidden != None and cell != None:
-            hidden = torch.tensor(hidden, device=self.device).unsqueeze(0)
-            cell = torch.tensor(cell, device=self.device).unsqueeze(0)
+            hidden = torch.tensor(hidden, device=self.device) #.unsqueeze(0)
+            cell = torch.tensor(cell, device=self.device) #.unsqueeze(0)
         else:
             hidden = None
             cell = None
@@ -74,28 +75,27 @@ class Animal:
         """
         Store the experience to self.memory (replay buffer)
         """
-        if hidden != None:
-            hidden = np.array(torch.Tensor.cpu(hidden.detach()))
-        if cell != None:
+        if cell == None or hidden == None:
+            return
+        else:
             cell = np.array(torch.Tensor.cpu(cell.detach()))
-        # cell.to(device='cpu')
-        print(type(state))
-        print(type(next_state))
-        print(type(hidden))
-        print(type(cell))
-        self.memory.append((state, next_state, hidden, np.array(cell), action, reward, done))
+            hidden = np.array(torch.Tensor.cpu(hidden.detach()))
+        self.memory.append((state, next_state, hidden, cell, action, reward, done))
 
     def recall(self):
         """
         Retrieve a batch of experiences from memory
         """
+        # print("recall")
         batch = random.sample(self.memory, self.batch_size)
         state, next_state, hidden, cell, action, reward, done = map(np.stack, zip(*batch))
         
         state = torch.tensor(state, device=self.device)
         next_state = torch.tensor(next_state, device=self.device)
-        hidden = torch.tensor(hidden, device=self.device)
-        cell = torch.tensor(cell, device=self.device)
+        hidden = torch.tensor(hidden, device=self.device).squeeze(1)
+        hidden = hidden.transpose(0,1)
+        cell = torch.tensor(cell, device=self.device).squeeze(1)
+        cell = cell.transpose(0,1)
         action = torch.tensor(action, device=self.device, dtype=torch.int64).squeeze()
         reward = torch.tensor(reward, device=self.device).squeeze()
         done = torch.tensor(done, device=self.device).squeeze()
@@ -103,7 +103,7 @@ class Animal:
         return state, next_state, hidden, cell, action, reward, done
     
     def td_estimate(self, state, hidden, cell, action):
-        current_Q, (current_Hidden, current_Cell) = self.net(state, hidden, cell, model="online")
+        current_Q, (current_Hidden, current_Cell) = self.net(state, model="online", hidden_state=hidden, cell_state=cell)
         current_Q = current_Q[
             np.arange(0, self.batch_size), action
         ]  # Q_online(s,a)
@@ -115,9 +115,9 @@ class Animal:
 
     @torch.no_grad()
     def td_target(self, reward, next_state, hidden, cell, done):
-        next_state_Q, _ = self.net(next_state, hidden, cell, model="online")
+        next_state_Q, _ = self.net(next_state,  model="online", hidden_state=hidden, cell_state=cell)
         best_action = torch.argmax(next_state_Q, axis=1)
-        next_Q, _ = self.net(next_state, hidden, cell, model="target")
+        next_Q, _ = self.net(next_state,  model="target", hidden_state=hidden, cell_state=cell)
         next_Q = next_Q[
             np.arange(0, self.batch_size), best_action
         ]
@@ -156,15 +156,19 @@ class Animal:
         if self.curr_step % self.learn_every != 0:
             return None, None
 
+        # print("learn1")
         # Sample from memory
         state, next_state, hidden, cell, action, reward, done = self.recall()
 
+        # print("learn2")
         # Get TD Estimate
         td_est, (current_hidden, current_cell) = self.td_estimate(state, hidden, cell, action)
 
+        # print("learn3")
         # Get TD Target
         td_tgt = self.td_target(reward, next_state, current_hidden, current_cell, done)
 
+        # print("learn4")
         # Backpropagate loss through Q_online
         loss = self.update_Q_online(td_est, td_tgt)
 
