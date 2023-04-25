@@ -50,16 +50,24 @@ class DQN_LSTM(nn.Module):
             p.requires_grad = False
 
     def forward(self, input, model, hidden_state=None, cell_state=None):
+        # if hidden_state is not None:
+        #     print("hidden_state.shape",hidden_state.shape)
+        #     print("cell_state.shape",cell_state.shape)
         if model == "online":
-            print(self.online[:-3])
             features = self.online[:-3](input)
-            output, (hidden, cell_state) = self.online[-3](features, hidden_state, cell_state)
+            if hidden_state is None:
+                output, (hidden, cell_state) = self.online[-3](features)
+            else:
+                output, (hidden, cell_state) = self.online[-3](features, hidden_state[0], cell_state[0])
             output = F.relu(output)
             output = self.online[-1](output)
             return output, (hidden, cell_state)
         elif model == "target":
             features = self.target[:-3](input)
-            output, (hidden, cell_state) = self.target[-3](features, hidden_state, cell_state)
+            if hidden_state is None:
+                output, (hidden, cell_state) = self.online[-3](features)
+            else:
+                output, (hidden, cell_state) = self.online[-3](features, hidden_state[0], cell_state[0])
             output = F.relu(output)
             output = self.target[-1](output)
             return output, (hidden, cell_state)
@@ -68,6 +76,7 @@ if __name__ == '__main__':
     NET = DQN_LSTM((3,3,1), 3).float()
     print(NET.online.state_dict().keys())
     print(NET.target.state_dict().keys())
-    print(NET.online.state_dict()['11.lstm.weight_hh_l0'])
-    print(NET.target.state_dict()['11.lstm.weight_hh_l0'])
+    print(NET.online[:-3].state_dict().keys())
+    # print(NET.online.state_dict()['11.lstm.weight_hh_l0'])
+    # print(NET.target.state_dict()['11.lstm.weight_hh_l0'])
     pass

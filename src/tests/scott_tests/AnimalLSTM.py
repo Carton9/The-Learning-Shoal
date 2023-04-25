@@ -52,12 +52,14 @@ class Animal:
             cell = None
         # EXPLORE
         if np.random.rand() < self.exploration_rate:
-            _, (hidden, cell) = self.net(state, model="online", hidden_state=hidden, cell_state=cell)
+            # print(hidden.shape)
+            # print(cell.shape)
+            _, (hidden, cell) = self.net.forward(state, model="online", hidden_state=hidden, cell_state=cell)
             action_idx = np.random.randint(self.action_dim)
 
         # EXPLOIT
         else:
-            action_values, (hidden, cell) = self.net(state, model="online", hidden_state=hidden, cell_state=cell)
+            action_values, (hidden, cell) = self.net.forward(state, model="online", hidden_state=hidden, cell_state=cell)
             action_idx = torch.argmax(action_values, axis=1).item()
 
         if active:
@@ -79,10 +81,10 @@ class Animal:
         if cell != None:
             cell = np.array(torch.Tensor.cpu(cell.detach()))
         # cell.to(device='cpu')
-        print(type(state))
-        print(type(next_state))
-        print(type(hidden))
-        print(type(cell))
+        # print(type(state))
+        # print(type(next_state))
+        # print(type(hidden))
+        # print(type(cell))
         self.memory.append((state, next_state, hidden, np.array(cell), action, reward, done))
 
     def recall(self):
@@ -90,6 +92,7 @@ class Animal:
         Retrieve a batch of experiences from memory
         """
         batch = random.sample(self.memory, self.batch_size)
+        print("batch",batch)
         state, next_state, hidden, cell, action, reward, done = map(np.stack, zip(*batch))
         
         state = torch.tensor(state, device=self.device)
@@ -103,7 +106,8 @@ class Animal:
         return state, next_state, hidden, cell, action, reward, done
     
     def td_estimate(self, state, hidden, cell, action):
-        current_Q, (current_Hidden, current_Cell) = self.net(state, hidden, cell, model="online")
+        
+        current_Q, (current_Hidden, current_Cell) = self.net.forward(state, model="online", hidden_state=hidden, cell_state=cell)
         current_Q = current_Q[
             np.arange(0, self.batch_size), action
         ]  # Q_online(s,a)
@@ -115,9 +119,12 @@ class Animal:
 
     @torch.no_grad()
     def td_target(self, reward, next_state, hidden, cell, done):
-        next_state_Q, _ = self.net(next_state, hidden, cell, model="online")
+        print(hidden.shape)
+        print(cell.shape)
+        next_state_Q, _ = self.net.forward(next_state, model="online", hidden_state=hidden, cell_state=cell)
         best_action = torch.argmax(next_state_Q, axis=1)
-        next_Q, _ = self.net(next_state, hidden, cell, model="target")
+        
+        next_Q, _ = self.net.forward(next_state, model="target", hidden_state=hidden, cell_state=cell)
         next_Q = next_Q[
             np.arange(0, self.batch_size), best_action
         ]
