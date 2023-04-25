@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 
 class MetricLogger:
-    def __init__(self, save_dir):
+    def __init__(self, save_dir, animal='deer'):
         self.save_log = save_dir / "log"
         with open(self.save_log, "w") as f:
             f.write(
@@ -16,6 +16,8 @@ class MetricLogger:
         self.ep_lengths_plot = save_dir / "length_plot.jpg"
         self.ep_avg_losses_plot = save_dir / "loss_plot.jpg"
         self.ep_avg_qs_plot = save_dir / "q_plot.jpg"
+        
+        self.animal = animal
 
         # History metrics
         self.ep_rewards = []
@@ -81,6 +83,7 @@ class MetricLogger:
 
         print(
             f"Episode {episode} - "
+            f"{self.animal} - "
             f"Step {step} - "
             f"Epsilon {epsilon} - "
             f"Mean Reward {mean_ep_reward} - "
