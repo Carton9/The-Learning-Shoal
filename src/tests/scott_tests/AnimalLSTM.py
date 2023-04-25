@@ -107,10 +107,6 @@ class Animal:
         current_Q = current_Q[
             np.arange(0, self.batch_size), action
         ]  # Q_online(s,a)
-        ##########################################
-        # do something with hidden and cell states if needed
-
-        ##########################################
         return current_Q, (current_Hidden, current_Cell)
 
     @torch.no_grad()
