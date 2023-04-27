@@ -96,7 +96,11 @@ class MetricLogger:
             f"Time {datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S')}"
         )
         with open(self.save_rawData, "w") as f:
-            dic={"ep_rewards":self.ep_rewards,"ep_lengths":self.ep_lengths,"ep_avg_losses":self.ep_avg_losses,"ep_avg_qs":self.ep_avg_qs,}
+            dic={"ep_rewards":self.ep_rewards,"ep_lengths":self.ep_lengths,"ep_avg_losses":self.ep_avg_losses,"ep_avg_qs":self.ep_avg_qs,
+                 "moving_avg_ep_rewards":self.moving_avg_ep_rewards,
+                 "moving_avg_ep_lengths":self.moving_avg_ep_lengths,
+                 "moving_avg_ep_avg_losses":self.moving_avg_ep_avg_losses,
+                 "moving_avg_ep_avg_qs":self.moving_avg_ep_avg_qs}
             json.dump(dic,f)
         
         with open(self.save_log, "a") as f:
