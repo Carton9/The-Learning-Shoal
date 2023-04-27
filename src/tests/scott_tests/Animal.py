@@ -146,6 +146,11 @@ class Animal:
         )
         print(f"Animal saved to {save_path} at step {self.curr_step}")
     
+        def load(self,path):
+            obj=torch.load(path)
+        self.net.load_state_dict(obj["model"])
+        self.net.eval()
+    
     def learn(self):
         if self.curr_step % self.sync_every == 0:
             self.sync_Q_target()
