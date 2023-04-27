@@ -146,8 +146,8 @@ class Animal:
         )
         print(f"Animal saved to {save_path} at step {self.curr_step}")
     
-        def load(self,path):
-            obj=torch.load(path)
+    def load(self,path):
+        obj=torch.load(path)
         self.net.load_state_dict(obj["model"])
         self.net.eval()
     

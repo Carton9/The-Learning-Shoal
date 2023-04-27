@@ -1,11 +1,13 @@
 import numpy as np
 import time, datetime
 import matplotlib.pyplot as plt
+import json
 
 
 class MetricLogger:
     def __init__(self, save_dir, animal='deer'):
         self.save_log = save_dir / "log"
+        self.save_rawData = save_dir / "raw.json"
         with open(self.save_log, "w") as f:
             f.write(
                 f"{'Episode':>8}{'Step':>8}{'Epsilon':>10}{'MeanReward':>15}"
@@ -93,7 +95,10 @@ class MetricLogger:
             f"Time Delta {time_since_last_record} - "
             f"Time {datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S')}"
         )
-
+        with open(self.save_rawData, "w") as f:
+            dic={"ep_rewards":self.ep_rewards,"ep_lengths":self.ep_lengths,"ep_avg_losses":self.ep_avg_losses,"ep_avg_qs":self.ep_avg_qs,}
+            json.dump(dic,f)
+        
         with open(self.save_log, "a") as f:
             f.write(
                 f"{episode:8d}{step:8d}{epsilon:10.3f}"
