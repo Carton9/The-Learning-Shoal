@@ -166,3 +166,4 @@ src/local_magent2/environments/CustomEnvironment/*
 
 src/tests/scott_tests/deer_checkpoints/*
 src/tests/scott_tests/tiger_checkpoints/*
+src/tests/scott_tests/finalPlot.zip
