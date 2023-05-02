@@ -13,7 +13,6 @@ class Animal:
 
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
-        # Mario's DNN to predict the most optimal action - we implement this in the Learn section
         self.net = DQN_NET(self.state_dim, self.action_dim).float()
         self.net = self.net.to(device=self.device)
 
@@ -22,7 +21,7 @@ class Animal:
         self.exploration_rate_min = 0.1
         self.curr_step = 0
 
-        self.save_every = 5e4  # no. of experiences between saving Mario Net
+        self.save_every = 5e4  # no. of experiences between saving
         
         # cache and memory
         self.memory = deque(maxlen=50000)
@@ -40,14 +39,6 @@ class Animal:
         self.sync_every = 1e4  # no. of experiences between Q_target & Q_online sync
 
     def act(self, state, active=True):
-        """
-    Given a state, choose an epsilon-greedy action and update value of step.
-
-    Inputs:
-    state(``LazyFrame``): A single observation of the current state, dimension is (state_dim)
-    Outputs:
-    ``action_idx`` (``int``): An integer representing which action Mario will perform
-    """
         # EXPLORE
         if np.random.rand() < self.exploration_rate:
             action_idx = np.random.randint(self.action_dim)
@@ -68,38 +59,11 @@ class Animal:
             self.curr_step += 1
         return action_idx
     
-    # def cache(self, state, next_state, action, reward, done, agentName=None):
-    #     """
-    #     Store the experience to self.memory (replay buffer)
-    #     """
-    #     state = torch.tensor(state, device=self.device)
-    #     next_state = torch.tensor(next_state, device=self.device)
-    #     action = torch.tensor([action], device=self.device)
-    #     reward = torch.tensor([reward], device=self.device)
-    #     done = torch.tensor([done], device=self.device)
-    #     # agentName = torch.tensor([agentName], device=self.device)
-
-    #     self.memory.append((state, next_state, action, reward, done))
-
-    # def recall(self):
-    #     """
-    #     Retrieve a batch of experiences from memory
-    #     """
-    #     batch = random.sample(self.memory, self.batch_size)
-    #     state, next_state, action, reward, done = map(torch.stack, zip(*batch))
-    #     return state, next_state, action.squeeze(), reward.squeeze(), done.squeeze() #, agentName.squeeze()
     
     def cache(self, state, next_state, action, reward, done, agentName=None):
-        """
-        Store the experience to self.memory (replay buffer)
-        """
-
         self.memory.append((state, next_state, action, reward, done))
 
     def recall(self):
-        """
-        Retrieve a batch of experiences from memory
-        """
         batch = random.sample(self.memory, self.batch_size)
         state, next_state, action, reward, done = map(np.stack, zip(*batch))
         
