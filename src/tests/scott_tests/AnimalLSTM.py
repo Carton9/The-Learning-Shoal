@@ -13,7 +13,6 @@ class Animal:
 
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
-        # Mario's DNN to predict the most optimal action - we implement this in the Learn section
         self.net = DQN_LSTM(self.state_dim, self.action_dim).float()
         self.net = self.net.to(device=self.device)
 
@@ -22,7 +21,7 @@ class Animal:
         self.exploration_rate_min = 0.1
         self.curr_step = 0
 
-        self.save_every = 5e4  # no. of experiences between saving Mario Net
+        self.save_every = 5e4  # no. of experiences between saving
         
         # cache and memory
         self.memory = deque(maxlen=50000)
@@ -40,9 +39,6 @@ class Animal:
         self.sync_every = 1e4  # no. of experiences between Q_target & Q_online sync
 
     def act(self, state, hidden, cell, active=True):
-        """
-    Given a state, choose an epsilon-greedy action and update value of step.
-    """
         # print("act")
         state = torch.tensor(state, device=self.device).unsqueeze(0)
         if hidden != None and cell != None:
@@ -70,7 +66,6 @@ class Animal:
             self.curr_step += 1
         return action_idx, (hidden, cell)
     
-    
     def cache(self, state, next_state, hidden, cell, action, reward, done, agentName=None):
         """
         Store the experience to self.memory (replay buffer)
@@ -83,9 +78,6 @@ class Animal:
         self.memory.append((state, next_state, hidden, cell, action, reward, done))
 
     def recall(self):
-        """
-        Retrieve a batch of experiences from memory
-        """
         # print("recall")
         batch = random.sample(self.memory, self.batch_size)
         state, next_state, hidden, cell, action, reward, done = map(np.stack, zip(*batch))
