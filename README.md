@@ -1,6 +1,6 @@
 # MFRL-Final
 
-The magent2 is the library use to run the MFRL. Run the main files in the src folder.
+The magent2 is the library use to run the MFRL. Run the main files in the src folder. Will need to download and install Magent2 library,
 
 # For seeing the Videos of the results see the zip links below:
 
