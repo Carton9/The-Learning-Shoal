@@ -70,7 +70,6 @@ class Animal:
             self.curr_step += 1
         return action_idx, (hidden, cell)
     
-    
     def cache(self, state, next_state, hidden, cell, action, reward, done, agentName=None):
         """
         Store the experience to self.memory (replay buffer)
