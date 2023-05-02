@@ -167,3 +167,7 @@ src/local_magent2/environments/CustomEnvironment/*
 src/tests/scott_tests/deer_checkpoints/*
 src/tests/scott_tests/tiger_checkpoints/*
 src/tests/scott_tests/finalPlot.zip
+src/tests/scott_tests/新建文件夹/LSTM_EditReward.mp4
+src/tests/scott_tests/新建文件夹/LSTM_EditReward.mkv
+src/tests/scott_tests/新建文件夹/Basic_EditReward.mp4
+src/tests/scott_tests/新建文件夹/Basic_EditReward.mkv
